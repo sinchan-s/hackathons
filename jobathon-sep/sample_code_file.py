@@ -2,15 +2,19 @@
 from pyspark.sql.functions import *
 
 
+spark = SparkSession.builder.appName('DF').getOrCreate()
+s3_clickstream_path = 'jobathon_sample_data\jobathin_click_data.json'
+s3_login_path = 'jobathon_sample_data\jobathon_login_data.csv'
 
-# Your code goes inside this function
-# Function input - spark object, click data path, resolved data path
-# Function output - final spark dataframe
 def sample_function(spark, s3_clickstream_path, s3_login_path):
 
 	# Your code goes below
 	df_clickstream =  spark.read.format("json").load(s3_clickstream_path)
 	user_mapping =  spark.read.format("csv").option("header",True).load(s3_login_path)
+
+	
+
+
 
 	df_clickstream = df_clickstream.withColumn("current_date",substring(col("event_date_time"),1,10))
 	df_clickstream = df_clickstream.withColumn("number_of_clicks",lit(1)) \
@@ -23,7 +27,7 @@ def sample_function(spark, s3_clickstream_path, s3_login_path):
 	
 	df_union.createOrReplaceTempView("df_union_tbl")
 	
-	df_result = spark.sql("select * from df_union_tbl limit 1000")
+	df_result = spark.sql("select * from df_union_tbl limit 10")
 	
 	# Return your final spark df
 	return df_result
