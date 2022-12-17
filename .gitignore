@@ -1,4 +1,5 @@
 *.json
 *.zip
+ignore
 .ipynb_checkpoints
 approachs
